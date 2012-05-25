@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<extension engine="1.0">
+	<id>etherpad</id>
+	<title>Etherpad</title>
+	<version>0.1.0</version>
+	<description>Embed editable Etherpads in posts.</description>
+	<author>Candid Dauth</author>
+	<minversion>1.4</minversion>
+	<maxtestedon>1.4.2</maxtestedon>
+	
+	<install><![CDATA[
+		$forum_db->query_build(array("INSERT" => "conf_name, conf_value", "INTO" => "config", "VALUES" => "'o_etherpad_url', ''"));
+		$forum_db->query_build(array("INSERT" => "conf_name, conf_value", "INTO" => "config", "VALUES" => "'o_etherpad_prefix', ''"));
+	]]></install>
+	<uninstall><![CDATA[
+		$forum_db->query_build(array("DELETE" => "config", "WHERE" => "conf_name = 'o_etherpad_url' OR conf_name = 'o_etherpad_prefix'"));
+	]]></uninstall>
+	<hooks>
+		<hook id="he_new_bbcode_section"><![CDATA[
+			require($ext_info['path']."/bbcode_help.php");
+		]]>
+		</hook>
+		<hook id="ps_preparse_tags_start"><![CDATA[
+			require_once($ext_info['path']."/common.php");
+
+			$tags[] = ETHERPAD_TAG;
+			$tags_block[] = ETHERPAD_TAG;
+		]]>
+		</hook>
+		<hook id="ps_preparse_tags_end"><![CDATA[
+			require_once($ext_info['path']."/common.php");
+			
+			$new_text = etherpad_add_random_ids($new_text);
+		]]>
+		</hook>
+		<hook id="ps_do_bbcode_replace"><![CDATA[
+			require_once($ext_info['path']."/common.php");
+
+			if($forum_config['o_etherpad_url'])
+			{
+				$pattern[] = "/\\[".preg_quote(ETHERPAD_TAG, "/")."=(.*?)\\]/e";
+				$replace[] = "'<iframe src=\"'.htmlspecialchars(etherpad_make_url('$1')).'\" class=\"etherpad\"></iframe>'";
+			}
+		]]>
+		</hook>
+		<hook id="aop_features_gzip_fieldset_end"><![CDATA[
+			require_once($ext_info['path']."/admin_setting.php");
+		]]>
+		</hook>
+		<hook id="hd_head"><![CDATA[
+			$forum_loader->add_css($ext_info['url']."/style.css");
+		]]>
+		</hook>
+	</hooks>
+</extension>
