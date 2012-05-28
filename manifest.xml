@@ -51,5 +51,9 @@
 			$forum_loader->add_css($ext_info['url']."/style.css");
 		]]>
 		</hook>
+		<hook id="pun_bbcode_pre_buttons_output"><![CDATA[
+			$this->add_button(array('name' => 'etherpad', 'weight' => 61, 'image' => true, 'onclick' => 'PUNBB.pun_bbcode.insert_text(\'[etherpad]\n\', \'\')'));
+		]]>
+		</hook>
 	</hooks>
 </extension>

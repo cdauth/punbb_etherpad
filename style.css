@@ -1,1 +1,3 @@
 iframe.etherpad { width:100%; height:450px; }
+
+#pun_bbcode_bar input.image[name=etherpad] { background:url(etherpad.png) no-repeat center center transparent; }
