@@ -52,7 +52,9 @@
 		]]>
 		</hook>
 		<hook id="pun_bbcode_pre_buttons_output"><![CDATA[
-			$this->add_button(array('name' => 'etherpad', 'weight' => 61, 'image' => true, 'onclick' => 'PUNBB.pun_bbcode.insert_text(\'[etherpad]\n\', \'\')'));
+			require_once($ext_info['path']."/common.php");
+
+			$this->add_button(array('name' => ETHERPAD_TAG, 'weight' => 61, 'image' => true, 'onclick' => 'PUNBB.pun_bbcode.insert_text(\'['.ETHERPAD_TAG.']\n\', \'\')'));
 		]]>
 		</hook>
 	</hooks>
