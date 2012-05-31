@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <extension engine="1.0">
-	<id>etherpad</id>
-	<title>Etherpad</title>
+	<id>ethercalc</id>
+	<title>Ethercalc</title>
 	<version>0.1.2</version>
-	<description>Embed editable Etherpads in posts.</description>
+	<description>Embed editable Ethercalc spreadsheets in posts.</description>
 	<author>Candid Dauth</author>
 	<minversion>1.4</minversion>
 	<maxtestedon>1.4.4</maxtestedon>
 	
 	<install><![CDATA[
-		$forum_db->query_build(array("INSERT" => "conf_name, conf_value", "INTO" => "config", "VALUES" => "'o_etherpad_url', ''"));
-		$forum_db->query_build(array("INSERT" => "conf_name, conf_value", "INTO" => "config", "VALUES" => "'o_etherpad_prefix', ''"));
+		$forum_db->query_build(array("INSERT" => "conf_name, conf_value", "INTO" => "config", "VALUES" => "'o_ethercalc_url', ''"));
+		$forum_db->query_build(array("INSERT" => "conf_name, conf_value", "INTO" => "config", "VALUES" => "'o_ethercalc_prefix', ''"));
 	]]></install>
 	<uninstall><![CDATA[
-		$forum_db->query_build(array("DELETE" => "config", "WHERE" => "conf_name = 'o_etherpad_url' OR conf_name = 'o_etherpad_prefix'"));
+		$forum_db->query_build(array("DELETE" => "config", "WHERE" => "conf_name = 'o_ethercalc_url' OR conf_name = 'o_ethercalc_prefix'"));
 	]]></uninstall>
 	<hooks>
 		<hook id="he_new_bbcode_section"><![CDATA[
@@ -23,26 +23,26 @@
 		<hook id="ps_preparse_tags_start"><![CDATA[
 			require_once($ext_info['path']."/common.php");
 
-			$tags[] = ETHERPAD_TAG;
-			$tags_block[] = ETHERPAD_TAG;
+			$tags[] = ETHERCALC_TAG;
+			$tags_block[] = ETHERCALC_TAG;
 		]]>
 		</hook>
 		<hook id="ps_preparse_tags_end"><![CDATA[
 			require_once($ext_info['path']."/common.php");
 			
-			$new_text = etherpad_add_random_ids($new_text);
+			$new_text = ethercalc_add_random_ids($new_text);
 		]]>
 		</hook>
 		<hook id="ps_do_bbcode_replace"><![CDATA[
 			require_once($ext_info['path']."/common.php");
 
-			if($forum_config['o_etherpad_url'])
+			if($forum_config['o_ethercalc_url'])
 			{
 				if(!isset($pattern_callback))
 					list($pattern_callback, $replace_callback) = array(array(), array());
 
-				$pattern_callback[] = "/\\[".preg_quote(ETHERPAD_TAG, "/")."=(.*?)\\]/";
-				$replace_callback[] = "'<iframe src=\"'.htmlspecialchars(etherpad_make_url(\$matches[1])).'\" class=\"etherpad\"></iframe>'";
+				$pattern_callback[] = "/\\[".preg_quote(ETHERCALC_TAG, "/")."=(.*?)\\]/";
+				$replace_callback[] = "'<iframe src=\"'.htmlspecialchars(ethercalc_make_url(\$matches[1])).'\" class=\"ethercalc\"></iframe>'";
 			}
 		]]>
 		</hook>
@@ -57,7 +57,7 @@
 		<hook id="pun_bbcode_pre_buttons_output"><![CDATA[
 			require_once($ext_info['path']."/common.php");
 
-			$this->add_button(array('name' => ETHERPAD_TAG, 'weight' => 61, 'image' => true, 'onclick' => 'PUNBB.pun_bbcode.insert_text(\'['.ETHERPAD_TAG.']\n\', \'\')'));
+			$this->add_button(array('name' => ETHERCALC_TAG, 'weight' => 61, 'image' => true, 'onclick' => 'PUNBB.pun_bbcode.insert_text(\'['.ETHERCALC_TAG.']\n\', \'\')'));
 		]]>
 		</hook>
 	</hooks>
