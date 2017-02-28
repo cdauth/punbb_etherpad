@@ -2,11 +2,11 @@
 <extension engine="1.0">
 	<id>etherpad</id>
 	<title>Etherpad</title>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 	<description>Embed editable Etherpads in posts.</description>
 	<author>Candid Dauth</author>
 	<minversion>1.4</minversion>
-	<maxtestedon>1.4.2</maxtestedon>
+	<maxtestedon>1.4.4</maxtestedon>
 	
 	<install><![CDATA[
 		$forum_db->query_build(array("INSERT" => "conf_name, conf_value", "INTO" => "config", "VALUES" => "'o_etherpad_url', ''"));
@@ -38,8 +38,11 @@
 
 			if($forum_config['o_etherpad_url'])
 			{
-				$pattern[] = "/\\[".preg_quote(ETHERPAD_TAG, "/")."=(.*?)\\]/e";
-				$replace[] = "'<iframe src=\"'.htmlspecialchars(etherpad_make_url('$1')).'\" class=\"etherpad\"></iframe>'";
+				if(!isset($pattern_callback))
+					list($pattern_callback, $replace_callback) = array(array(), array());
+
+				$pattern_callback[] = "/\\[".preg_quote(ETHERPAD_TAG, "/")."=(.*?)\\]/";
+				$replace_callback[] = "'<iframe src=\"'.htmlspecialchars(etherpad_make_url(\$matches[1])).'\" class=\"etherpad\"></iframe>'";
 			}
 		]]>
 		</hook>
